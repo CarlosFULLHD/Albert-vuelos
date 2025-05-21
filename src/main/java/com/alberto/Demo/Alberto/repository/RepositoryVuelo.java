@@ -2,6 +2,7 @@ package com.alberto.Demo.Alberto.repository;
 
 import com.alberto.Demo.Alberto.entity.EntityVuelo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,9 +14,20 @@ public interface RepositoryVuelo extends JpaRepository<EntityVuelo, Long> {
     // JpaRepository Completo
     // PaginationAndSortingRepository
 
+    //Dar de baja todos los vuelos a un destino determinado.
+
+    @Modifying
+    @Query("DELETE FROM EntityVuelo vuelo WHERE vuelo.destino = :destino")
+    void eliminarVuelosPorDestino(@Param("destino") String destino);
+
+    // todos los vuelos que coincidan con el destino buscado
+    @Query("SELECT vuelo FROM EntityVuelo vuelo WHERE vuelo.destino = :destino")
+    List<EntityVuelo> findVuelosPorDestino(@Param("destino") String destino);
+
 
     //Métodos específicos:
     //Dar de baja todos los vuelos a un destino determinado.
+    @Modifying
     @Query("DELETE FROM EntityVuelo vuelo WHERE vuelo.destino = :destino")
     void deleteByDestino(@Param("destino") EntityVuelo destino);
 

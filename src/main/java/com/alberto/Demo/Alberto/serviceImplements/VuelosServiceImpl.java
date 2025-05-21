@@ -6,7 +6,10 @@ import com.alberto.Demo.Alberto.dtos.response.DtoVuelo;
 import com.alberto.Demo.Alberto.entity.EntityVuelo;
 import com.alberto.Demo.Alberto.repository.RepositoryVuelo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +28,31 @@ public class VuelosServiceImpl implements InterfaceVueloService {
 
     @Override
     public List<EntityVuelo> ListarTodoslosVuelos() {
-        List<EntityVuelo> listaDeVuelos = repositoryVuelo.findAll();
-
-        return List.of((EntityVuelo) listaDeVuelos);
+        return repositoryVuelo.findAll();
     }
+
+
+    @Override
+    public void eliminarVuelosPorDestino(String destino) {
+        List<EntityVuelo> vuelosPorDestino = repositoryVuelo.findVuelosPorDestino(destino);
+
+        if (vuelosPorDestino.isEmpty()) {
+            // AQUI: pues devolvemos el 404 por su digamos no tenemos ningun vuelo hacia ese destino
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron vuelos hacia el destino: " + destino);
+        }
+
+        List<EntityVuelo> vuelosPorDestinoDelService = repositoryVuelo.findVuelosPorDestino(destino);
+        // obtenemos la lista de vuelos a eliminar
+        for (EntityVuelo vuelo : vuelosPorDestinoDelService) {
+            repositoryVuelo.delete(vuelo);
+            // AQUI: en lugar de hacer .clear se hace
+
+        }
+        // Lista vuelosPorDestinoDelService
+        // recorrer la lista y eliminar vuelos 1 a 1
+    }
+
+
 
     // Dto RespuestaVuelo
 
@@ -37,6 +61,13 @@ public class VuelosServiceImpl implements InterfaceVueloService {
 //    private String destino;
 //    private BigDecimal precio;
 //    private String numeroDeEscalas;
+
+    @Override
+    public void eliminarVuelosHaciaDestino(String destino) {
+        repositoryVuelo.eliminarVuelosPorDestino(destino);
+    }
+
+
 
     @Override
     public GlobalResponse GuardarNuevoVuelo(DtoVuelo dtoVuelo) {

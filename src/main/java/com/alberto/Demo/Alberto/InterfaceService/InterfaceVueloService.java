@@ -3,6 +3,7 @@ package com.alberto.Demo.Alberto.InterfaceService;
 import com.alberto.Demo.Alberto.dtos.GlobalResponse;
 import com.alberto.Demo.Alberto.dtos.response.DtoVuelo;
 import com.alberto.Demo.Alberto.entity.EntityVuelo;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -11,10 +12,13 @@ public interface InterfaceVueloService {
     // Que vamos a devolver List<>, Objet
         // Entity
         // DtoResponse
+    void eliminarVuelosHaciaDestino(String destino);
 
 
-    // Nombre de la funcion
-    // Parametros
+    void eliminarVuelosPorDestino(@Param("destino") String destino);
+
+
+
 
     // crear un nuevo vuelo con  "Dtovuelo" y usando GlobalResponse
     GlobalResponse GuardarNuevoVuelo(DtoVuelo dtoResponseVuelo);
